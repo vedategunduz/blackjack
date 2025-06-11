@@ -1,3 +1,5 @@
+https://vedategunduz.github.io/blackjack/
+
 ### Blackjack Kuralları:
 
 1. **Oyunun Başlangıcı:**
