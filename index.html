@@ -4,20 +4,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Blackjack</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2f;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .card {
+            display: inline-block;
+            width: 60px;
+            height: 80px;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            margin: 5px;
+            padding: 10px;
+            background-color: #fff;
+            color: #000;
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .value {
+            font-size: 18px;
+        }
+
+        .suit {
+            font-size: 14px;
+        }
+
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        button:hover {
+            background-color: #388e3c;
+        }
+
+        #player,
+        #dealer {
+            min-height: 100px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div class="">
+    <div>
         <h1>Player</h1>
         <div id="player"></div>
+        <p id="player-score">Score: 0</p>
     </div>
-    <div class="">
+    <div>
         <h1>Dealer</h1>
         <div id="dealer"></div>
+        <p id="dealer-score">Score: 0</p>
     </div>
-    <div class="">
+
+    <div>
         <h1>Result</h1>
         <div id="result"></div>
     </div>

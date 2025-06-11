@@ -1,18 +1,20 @@
 'use strict';
 
-// Card
 const card = {
-    suits: ["Clubs", "Diamonds", "Hearts", "Spades"],
+    suits: ["♣", "♦", "♥", "♠"],
     values: ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"]
 };
 
-const deck = [];
+let deck = [];
 
-card.suits.forEach(suit => {
-    card.values.forEach(value => {
-        deck.push({ value, suit });
+function initDeck() {
+    deck = [];
+    card.suits.forEach(suit => {
+        card.values.forEach(value => {
+            deck.push({ value, suit });
+        });
     });
-});
+}
 
 function shuffle() {
     for (let i = deck.length - 1; i > 0; i--) {
@@ -25,84 +27,124 @@ function draw() {
     return deck.pop();
 }
 
-function pointValue(card) {
-    if (typeof card.value === 'number') {
-        return card.value;
-    } else if (card.value === 'A') {
-        return 11;
-    } else {
-        return 10;
+function calculateScore(hand) {
+    let score = 0;
+    let aces = 0;
+
+    hand.forEach(card => {
+        if (typeof card.value === 'number') {
+            score += card.value;
+        } else if (card.value === 'A') {
+            score += 11;
+            aces++;
+        } else {
+            score += 10;
+        }
+    });
+
+    while (score > 21 && aces > 0) {
+        score -= 10;
+        aces--;
     }
+
+    return score;
 }
 
-// Player
 const players = {
-    'you': {
-        hand: [],
-        score: 0
-    },
-    'dealer': {
-        hand: [],
-        score: 0
-    }
+    'you': { hand: [], score: 0 },
+    'dealer': { hand: [], score: 0 }
 };
 
-shuffle();
+let gameStarted = false;
 
-function createCard(player, card) {
+function createCard(card) {
     return `<div class="card">
-                <span class="value">${card.value}</span>
-                <span class="suit">${card.suit}</span>
+                <div class="value">${card.value}</div>
+                <div class="suit">${card.suit}</div>
             </div>`;
 }
 
+const playerEl = document.querySelector('#player');
+const dealerEl = document.querySelector('#dealer');
+const resultEl = document.querySelector('#result');
+const playerScoreEl = document.querySelector('#player-score');
+const dealerScoreEl = document.querySelector('#dealer-score');
 
-const player = document.querySelector('#player');
-const dealer = document.querySelector('#dealer');
-const result = document.querySelector('#result');
+function updateUI() {
+    playerEl.innerHTML = players.you.hand.map(createCard).join('');
+    dealerEl.innerHTML = players.dealer.hand.map(createCard).join('');
+    playerScoreEl.innerText = `Score: ${players.you.score}`;
+    dealerScoreEl.innerText = `Score: ${players.dealer.score}`;
+}
+
+startGame();
+
+function startGame() {
+    gameStarted = true;
+    initDeck();
+    shuffle();
+
+    players.you.hand = [draw()];
+    players.dealer.hand = [draw()];
+
+    players.you.score = calculateScore(players.you.hand);
+    players.dealer.score = calculateScore(players.dealer.hand);
+
+    resultEl.innerHTML = '';
+    updateUI();
+}
+
+function standLogic() {
+    while (players.dealer.score < 17) {
+        players.dealer.hand.push(draw());
+        players.dealer.score = calculateScore(players.dealer.hand);
+    }
+
+    updateUI();
+
+    if (players.you.score > 21) {
+        resultEl.innerHTML = "You busted!";
+    } else if (players.dealer.score > 21 || players.you.score > players.dealer.score) {
+        resultEl.innerHTML = "You win!";
+    } else if (players.you.score < players.dealer.score) {
+        resultEl.innerHTML = "Dealer wins!";
+    } else {
+        resultEl.innerHTML = "It's a tie!";
+    }
+
+    gameStarted = false;
+}
 
 document.addEventListener('click', function (event) {
-    event.target.closest('.draw') && (function () {
-        const card = draw();
+    if (!gameStarted) startGame();
 
-        players.you.hand.push(card);
-        players.you.score += pointValue(card);
-
-        player.innerHTML += createCard(players.you, card);
-
-        if (players.you.score > 21) {
-            result.innerHTML += "You busted! <br>";
-        }
-    })();
-    event.target.closest('.stand') && (function () {
-        while (players.dealer.score < 17) {
-            const card = draw();
-            players.dealer.hand.push(card);
-            players.dealer.score += pointValue(card);
-
-            dealer.innerHTML += createCard(players.dealer, card);
-        }
+    if (event.target.closest('.draw')) {
+        players.you.hand.push(draw());
+        players.you.score = calculateScore(players.you.hand);
+        updateUI();
 
         if (players.you.score > 21) {
-            result.innerHTML += "You busted! <br>";
-        } else if (players.dealer.score > 21 || players.you.score > players.dealer.score) {
-            result.innerHTML += "You win! <br>";
-        } else if (players.you.score < players.dealer.score) {
-            result.innerHTML += "Dealer wins! <br>";
-        } else {
-            result.innerHTML += "It's a tie! <br>";
+            resultEl.innerHTML = "You busted!";
+            gameStarted = false;
+        } else if (players.you.score === 21) {
+            standLogic(); // otomatik stand
         }
-    })();
-    event.target.closest('.reset') && (function () {
+    }
+
+    if (event.target.closest('.stand')) {
+        standLogic();
+    }
+
+    if (event.target.closest('.reset')) {
         players.you.hand = [];
-        players.you.score = 0;
         players.dealer.hand = [];
+        players.you.score = 0;
         players.dealer.score = 0;
-
-        player.innerHTML = '';
-        dealer.innerHTML = '';
-        result.innerHTML = '';
-
-        shuffle();
-    })();
+        gameStarted = false;
+        resultEl.innerHTML = '';
+        playerEl.innerHTML = '';
+        dealerEl.innerHTML = '';
+        playerScoreEl.innerText = 'Score: 0';
+        dealerScoreEl.innerText = 'Score: 0';
+    }
 });
