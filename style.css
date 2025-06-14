@@ -1,0 +1,111 @@
+/* Temel sıfırlamalar */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #2c3e50;
+  color: #ecf0f1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+/* Oyun kabı */
+.game-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  max-width: 960px;
+  margin-bottom: 2rem;
+}
+
+/* Kartları tutan bölüm */
+.hand {
+  background: #34495e;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.hand h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.25rem;
+  text-align: center;
+}
+
+/* Kart kutucukları */
+.card {
+  width: 60px;
+  height: 80px;
+  background: #ecf0f1;
+  color: #2c3e50;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.25rem;
+  margin: 0.25rem;
+  font-weight: bold;
+}
+
+.card .value {
+  font-size: 1.1rem;
+}
+
+.card .suit {
+  font-size: 1.2rem;
+  text-align: right;
+}
+
+/* Kart gruplandırma */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Skor ve sonuç */
+.status {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.status p {
+  font-size: 1rem;
+  margin: 0.25rem 0;
+}
+
+/* Butonlar */
+.buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+button {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #c0392b;
+}
+
+button:disabled {
+  background: #7f8c8d;
+  cursor: not-allowed;
+}
